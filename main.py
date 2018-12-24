@@ -27,5 +27,5 @@ while True:
         folder = new_folder()
         os.mkdir(folder)
 
-    time.sleep(1 * 60)
+    time.sleep(5 * 60)
     urllib.request.urlretrieve(url, folder + "/" + shipName + datetime.datetime.now().strftime("-%H:%M") + ".jpg")
