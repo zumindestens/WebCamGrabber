@@ -23,6 +23,7 @@ except Exception:
 
 while True:
     if datetime.datetime.now().day != day:
+        day = datetime.datetime.now().day
         folder = new_folder()
         os.mkdir(folder)
 
