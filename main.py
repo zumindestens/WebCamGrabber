@@ -1,18 +1,22 @@
 import time
-import datetime
+from datetime import datetime
 import urllib.request
 import os
 import sys
+import pytz
 
+
+# example call: python3 main.py "http://example.de" Nordyl /home/tea/
 
 def new_folder():
-    return baseFolder + shipName + "-" + datetime.datetime.now().strftime("%d-%m-%Y")
+    return baseFolder + shipName + "-" + datetime.now(timeZone).strftime("%d-%m-%Y")
 
 
+timeZone = pytz.timezone('CET')
 url = sys.argv[1]
 shipName = sys.argv[2]
 baseFolder = sys.argv[3]
-day = datetime.datetime.now().day
+day = datetime.now(timeZone).day
 folder = new_folder()
 
 try:
@@ -22,10 +26,11 @@ except Exception:
 
 
 while True:
-    if datetime.datetime.now().day != day:
-        day = datetime.datetime.now().day
+    if datetime.now(timeZone).day != day:
+        day = datetime.now().day
         folder = new_folder()
         os.mkdir(folder)
 
     time.sleep(5 * 60)
-    urllib.request.urlretrieve(url, folder + "/" + shipName + datetime.datetime.now().strftime("-%H:%M") + ".jpg")
+    filePath = folder + "/" + shipName + datetime.now(timeZone).strftime("-%H:%M") + ".jpg"
+    urllib.request.urlretrieve(url, filePath)
