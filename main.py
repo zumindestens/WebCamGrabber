@@ -27,7 +27,7 @@ except Exception:
 
 while True:
     if datetime.now(timeZone).day != day:
-        day = datetime.now().day
+        day = datetime.now(timeZone).day
         folder = new_folder()
         os.mkdir(folder)
 
