@@ -59,6 +59,7 @@ while True:
         urllib.request.urlretrieve(url, filePath)
     except Exception:
         # do nothing probably just a timeout
+        print("")
 
     try:
         # get GPS coordinates
@@ -79,6 +80,7 @@ while True:
         brokenImg.save(filePath, exif=exif_bytes)
     except Exception:
         # do nothing probably just a timeout
+        print("")
 
 
 
