@@ -57,30 +57,33 @@ while True:
     try:
         filePath = folder + "/" + shipName + datetime.now(timeZone).strftime("-%H:%M") + ".jpg"
         urllib.request.urlretrieve(url, filePath)
+
+        try:
+            # get GPS coordinates
+            resp = requests.get("https://www.marinetraffic.com/map/getvesseljson/shipid:" + marineTrafficId,
+                                headers=headers)
+            longitude = resp.json()["LON"]
+            latitude = resp.json()["LAT"]
+
+            # set gps in exif
+            photo = gpsphoto.GPSPhoto(filePath)
+            info = gpsphoto.GPSInfo((float(latitude), float(longitude)))
+            photo.modGPSData(info, filePath)
+
+            # remove broken gps exif data
+            brokenImg = Image.open(filePath)
+            exif_dict = piexif.load(brokenImg.info["exif"])
+            exif_dict["GPS"].pop(piexif.GPSIFD.GPSProcessingMethod, None)
+            exif_bytes = piexif.dump(exif_dict)
+            brokenImg.save(filePath, exif=exif_bytes)
+        except Exception:
+            # do nothing probably just a timeout
+            print("")
+
     except Exception:
         # do nothing probably just a timeout
         print("")
 
-    try:
-        # get GPS coordinates
-        resp = requests.get("https://www.marinetraffic.com/map/getvesseljson/shipid:" + marineTrafficId, headers=headers)
-        longitude = resp.json()["LON"]
-        latitude = resp.json()["LAT"]
-
-        # set gps in exif
-        photo = gpsphoto.GPSPhoto(filePath)
-        info = gpsphoto.GPSInfo((float(latitude), float(longitude)))
-        photo.modGPSData(info, filePath)
-
-        # remove broken gps exif data
-        brokenImg = Image.open(filePath)
-        exif_dict = piexif.load(brokenImg.info["exif"])
-        exif_dict["GPS"].pop(piexif.GPSIFD.GPSProcessingMethod, None)
-        exif_bytes = piexif.dump(exif_dict)
-        brokenImg.save(filePath, exif=exif_bytes)
-    except Exception:
-        # do nothing probably just a timeout
-        print("")
 
 
 
