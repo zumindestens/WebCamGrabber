@@ -21,7 +21,7 @@ def log(text, exception):
     with open("log", "a+") as file:
         file.write(datetime.now(timeZone).strftime("%d-%m-%Y-%h-%m-%s") + ": \n")
         file.write(text + "\n")
-        file.write(traceback.format_exception_only(exception))
+        file.write(traceback.format_exc())
         file.write("\n")
 
 
@@ -92,7 +92,7 @@ headers = {
 
 try:
     # get the latest image
-    filePath = os.path.join(baseFolder, "/current.jpg")
+    filePath = os.path.join(baseFolder, "current.jpg")
     urllib.request.urlretrieve(url, filePath)
 except FileExistsError as f:
     log("Couldn't create new current.jpg file", f)
@@ -110,5 +110,10 @@ except NoGPSInfoException:
     os.rename(filePath, newFilePath)
 except Exception as e:
     log("Unknown Exception setting gps info", e)
+
+try:
+    os.remove(filePath)
+except Exception:
+    pass
 
 sys.exit(0)
