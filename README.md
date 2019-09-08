@@ -10,4 +10,4 @@ python3 main.py <source for image> <ship name> <basefolder>
 
 example for a cronjob:
 
-`2,12,22,32,42,52 * * * * sudo -u www-data python3 /home/web-user/WebCamScrap/main.py https://hurtigruten.vossaskyen.no/en.no/hruten_mslofoten.jpg Lofoten /media/webcam 311950`
+`2,12,22,32,42,52 * * * * sudo -u www-data python3 /home/web-user/WebCamScrap/main.py https://hurtigruten.vossaskyen.no/hruten_mslofoten.jpg Lofoten /media/webcam 311950`
