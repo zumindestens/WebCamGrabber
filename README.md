@@ -6,6 +6,7 @@ Creates a new folder for every new day.
 ## Required Software
 
 `apt install python3 python3-pip`
+
 `pip3 install pytz ExifRead GPSPhoto pillow piexif`
 
 ## Cronjob Example
