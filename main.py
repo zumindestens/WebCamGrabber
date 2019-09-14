@@ -17,16 +17,16 @@ class NoGPSInfoException(Exception):
 
 
 def log(text, exception):
-    assert isinstance(exception,Exception)
-    with open("log", "a+") as file:
-        file.write(datetime.now(timeZone).strftime("%d-%m-%Y-%h-%m-%s") + ": \n")
+    assert isinstance(exception, Exception)
+    with open(os.path.join(baseFolder, "log"), "a+") as file:
+        file.write(datetime.now(timeZone).strftime("%Y-%m-%d_%H:%M:%S") + ": \n")
         file.write(text + "\n")
         file.write(traceback.format_exc())
         file.write("\n")
 
 
 def createFolderIfPossible():
-    folder = os.path.join(baseFolder, shipName + "-" + datetime.now(timeZone).strftime("%d-%m-%Y"))
+    folder = os.path.join(baseFolder, shipName + "-" + datetime.now(timeZone).strftime("%Y-%m-%d"))
     try:
         os.mkdir(folder)
     except FileExistsError:
@@ -61,7 +61,7 @@ def set_gps(filePath):
     folder = createFolderIfPossible()
 
     try:
-        filePath = os.path.join(folder, shipName + datetime.now(timeZone).strftime("-%H:%M") + ".jpg")
+        filePath = os.path.join(folder, shipName + datetime.now(timeZone).strftime(DATE_FORMAT_FILE) + ".jpg")
         brokenImg.save(filePath, exif=exif_bytes)
     except Exception as e:
         log("failed to save manipulated exif data", e)
@@ -74,6 +74,7 @@ url = sys.argv[1]
 shipName = sys.argv[2]
 baseFolder = sys.argv[3]
 marineTrafficId = sys.argv[4]
+DATE_FORMAT_FILE = "-%Y-%m-%d_%H-%M-%S"
 
 # headers used for marinetraffic request
 headers = {
@@ -106,14 +107,14 @@ try:
     set_gps(filePath)
 except NoGPSInfoException:
     folder = createFolderIfPossible()
-    newFilePath = os.path.join(folder, shipName + datetime.now(timeZone).strftime("-%H:%M") + ".jpg")
+    newFilePath = os.path.join(folder, shipName + datetime.now(timeZone).strftime(DATE_FORMAT_FILE) + ".jpg")
     os.rename(filePath, newFilePath)
 except Exception as e:
     log("Unknown Exception setting gps info", e)
 
 try:
     os.remove(filePath)
-except Exception:
-    pass
+except Exception as e:
+    log("Couldn't delete file: current.jpg", e)
 
 sys.exit(0)
